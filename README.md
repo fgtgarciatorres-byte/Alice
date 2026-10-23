@@ -1,30 +1,40 @@
-# Alice — navegador multi-IA (v0.2 experimental)
+# Alice 0.2.1 — extensión multi-IA para Firefox (también Chrome/Edge)
 
-Extensión local para Chrome/Edge sin API ni servidor. Permite preparar preguntas, abrir ChatGPT, Grok y Kimi, copiar consultas y reunir **manualmente** respuestas para compararlas. No extrae conversaciones, cookies ni contraseñas, ni automatiza sitios de terceros.
+Prototipo local sin API ni servidor: prepara preguntas, enfoca las pestañas de ChatGPT, Grok y Kimi y guarda **manualmente** respuestas para realizar críticas cruzadas. No lee conversaciones de terceros ni automatiza el envío de mensajes.
 
-## Instalación
-1. Descarga el repositorio como ZIP desde GitHub (Code → Download ZIP) y descomprímelo.
-2. Abre `chrome://extensions` (Chrome) o `edge://extensions` (Edge).
-3. Activa **Modo desarrollador** y pulsa **Cargar descomprimida**.
-4. Selecciona la carpeta `extension` que contiene `manifest.json`.
-5. Fija Alice en la barra de extensiones. Abre sesión normalmente en los servicios que desees utilizar.
+## Firefox: instalación para pruebas
+1. Descarga el ZIP del repositorio en GitHub (Code → Download ZIP) y descomprímelo.
+2. Abre `about:debugging#/runtime/this-firefox` en Firefox.
+3. Pulsa **Cargar complemento temporal**.
+4. Selecciona `extension/manifest.json` en la carpeta descomprimida.
+5. Haz clic en el icono de extensiones o fija Alice en la barra de herramientas y abre el panel.
 
-## Prueba
-- Escribe una tarea y pulsa **Preparar consulta**. Se copia una instrucción en el portapapeles (según permiso del navegador).
-- Pulsa **Abrir ChatGPT**, **Abrir Grok** o **Abrir Kimi**. Pega el texto en la web y envíalo.
-- Copia la respuesta desde la web al cuadro del servicio en Alice y pulsa **Guardar respuesta**.
-- Pulsa **Preparar crítica cruzada** y selecciona otro servicio: se copia una consulta que incluye la respuesta anterior y pide revisar sus supuestos.
-- Al guardar dos respuestas, Alice muestra ambos textos para contrastarlos.
+**Importante:** una extensión temporal se desinstala al reiniciar Firefox. Para instalar Alice de forma permanente habrá que empaquetarla y firmarla mediante Mozilla Add-ons (AMO), incluso si se distribuye sin listado público. El ID Gecko incluido facilita esa fase, pero **no** equivale a una firma.
 
-## Privacidad y limitaciones
-- Los datos se guardan localmente usando `chrome.storage.local` dentro del perfil del navegador; no están cifrados por Alice. Evita incluir información confidencial.
-- Usa únicamente permisos `storage` y `tabs`. No solicita permisos para leer páginas externas.
-- No ejecuta tareas desatendidas ni accede a los chats abiertos. Las sesiones web no son equivalentes a una API.
-- Las condiciones de algunos servicios limitan la automatización y la extracción programática de contenidos.
-- El repositorio es público: nunca añadas claves, historiales privados o datos personales.
-- Las llamadas al portapapeles pueden estar sujetas a permisos; si fallan, selecciona y copia el texto del campo de salida.
+## Prueba funcional
+1. Abre sesión normalmente en ChatGPT, Grok o Kimi desde Firefox.
+2. Abre Alice, escribe una tarea y pulsa **Preparar consulta**.
+3. Pulsa **Abrir / enfocar** en un servicio. Pega allí el texto copiado y envíalo.
+4. Copia la respuesta del servicio y pégala en el campo correspondiente de Alice. Pulsa **Guardar respuesta**.
+5. Pulsa **Preparar crítica** para copiar otra consulta con esa respuesta y contrastarla en otro servicio.
+6. Guarda la segunda respuesta y pulsa **Mostrar respuestas reunidas**.
 
-## Próximos pasos
-Con autorización y soporte de los proveedores, añadir adaptadores para automatización permitida; instalar una app local opcional para colas, tareas y agentes especializados. No depender de la extracción de la interfaz web como interfaz estable.
+## Compatibilidad y permisos
+- Manifest V3; usa `action`, `tabs` y `storage`, compatibles con Firefox moderno.
+- Se añade `clipboardWrite` para permitir copiar el texto del panel con mayor fiabilidad en Firefox.
+- `browser_specific_settings.gecko.id` identifica la extensión para Firefox.
+- El JavaScript del panel usa `chrome.*` con métodos que devuelven promesas en Firefox moderno; si alguna versión antigua falla, utilizar una capa `browser.*` con polyfill.
+- No solicita acceso a dominios externos, ni permisos de lectura de páginas, ni al portapapeles de lectura.
+- El estado se almacena en el perfil local del navegador sin cifrado adicional.
+- Repositorio público: no subas chats privados, cookies ni credenciales.
 
-Licencia: prototipo de evaluación.
+## Chrome / Edge
+También se puede instalar desde `chrome://extensions` / `edge://extensions`, activando Modo desarrollador y **Cargar descomprimida** (carpeta `extension`). El manifiesto incluye metadatos propios de Firefox, ignorados por otros navegadores Chromium compatibles.
+
+## Limitaciones
+Esta versión **no está validada en una instancia real de Firefox** y no funciona desatendida. Coordina transferencias manuales. Una conexión automática a interfaces ajenas requerirá estudiar permisos, términos de servicio y mantenimiento de cada integración.
+
+## Código
+- `extension/manifest.json`: permisos y compatibilidad.
+- `extension/popup.html`: interfaz de Alice.
+- `extension/popup.js`: tareas, pestañas y comparación local.
