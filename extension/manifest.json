@@ -1,12 +1,19 @@
 {
   "manifest_version": 3,
   "name": "Alice — centro multi-IA",
-  "version": "0.2.0",
-  "description": "Coordina consultas y respuestas entre pestañas de IA, sin API ni extracción automatizada.",
+  "version": "0.2.1",
+  "description": "Centro local multi-IA para Firefox, Chrome y Edge: coordina consultas sin API ni lectura de páginas.",
   "permissions": [
     "storage",
-    "tabs"
+    "tabs",
+    "clipboardWrite"
   ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "alice-local@alice.example",
+      "strict_min_version": "109.0"
+    }
+  },
   "action": {
     "default_title": "Alice",
     "default_popup": "popup.html"
